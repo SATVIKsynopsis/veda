@@ -1,9 +1,5 @@
 "use client";
 
 export default function AssignmentForm() {
-  return (
-    <div>
-      Assignment Form
-    </div>
-  );
+  return <div>Assignment Form</div>;
 }

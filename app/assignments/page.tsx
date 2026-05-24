@@ -29,6 +29,7 @@ import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const [isGenerating, setIsGenerating] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<string | null>(null);
   const router = useRouter();
 
@@ -77,9 +78,12 @@ export default function HomePage() {
   );
 
   const generatePaper = async () => {
+    setIsGenerating(true);
+
     try {
       const response = await fetch("/api/generate-paper", {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
@@ -102,9 +106,10 @@ export default function HomePage() {
       setShowGeneratedPaper(true);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsGenerating(false);
     }
   };
-
   const user =
     typeof window !== "undefined"
       ? JSON.parse(localStorage.getItem("veda_user") || "{}")
@@ -805,10 +810,18 @@ export default function HomePage() {
                 </button>
 
                 <button
-                  className="rounded-full bg-black px-6 py-3 text-[14px] font-medium text-white"
+                  className="flex items-center gap-2 rounded-full bg-black px-6 py-3 text-[14px] font-medium text-white disabled:opacity-70"
                   onClick={generatePaper}
+                  disabled={isGenerating}
                 >
-                  Next →
+                  {isGenerating ? (
+                    <>
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>Next →</>
+                  )}
                 </button>
               </div>
             </div>
